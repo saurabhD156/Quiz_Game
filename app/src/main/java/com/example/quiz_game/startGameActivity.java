@@ -1,6 +1,5 @@
 package com.example.quiz_game;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -27,10 +26,10 @@ public class startGameActivity extends AppCompatActivity {
     private TextView question, ans_A, ans_B, ans_C, ans_D;
 
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
-    private FirebaseUser user = auth.getCurrentUser();
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private final FirebaseUser user = auth.getCurrentUser();
     private final DatabaseReference databaseReference = database.getReference().child("Questions");
-    private  DatabaseReference reference = database.getReference();
+    private final DatabaseReference reference = database.getReference();
 
     String quizQuestion;
     String quizAnswerA;
@@ -73,135 +72,137 @@ public class startGameActivity extends AppCompatActivity {
         resetTimer();
         game();
 
-        next.setOnClickListener(View -> {
+        next.setOnClickListener(v -> {
+            resetTimer();
             game();
-            startTimer();
         });
 
-        finishQue.setOnClickListener(View -> {
+        finishQue.setOnClickListener(v -> {
             sendScore();
             Intent i = new Intent(startGameActivity.this, resultActivity.class);
             startActivity(i);
             finish();
-
         });
 
-        ans_A.setOnClickListener(View -> {
+        ans_A.setOnClickListener(v -> {
+            pauseTimer();
             userAnswer = "a";
-
-            if (quizCorrectAnswer.equals(userAnswer)) {
+            if(quizCorrectAnswer.equals(userAnswer))
+            {
                 ans_A.setBackgroundColor(Color.GREEN);
                 userCorrect++;
                 correct.setText("" + userCorrect);
-
-            } else {
+            }
+            else
+            {
                 ans_A.setBackgroundColor(Color.RED);
                 userWrong++;
                 wrong.setText("" + userWrong);
                 findAnswer();
             }
-            pauseTimer();
         });
 
-        ans_B.setOnClickListener(View -> {
+        ans_B.setOnClickListener(v -> {
+            pauseTimer();
             userAnswer = "b";
-
-            if (quizCorrectAnswer.equals(userAnswer)) {
+            if(quizCorrectAnswer.equals(userAnswer))
+            {
                 ans_B.setBackgroundColor(Color.GREEN);
                 userCorrect++;
                 correct.setText("" + userCorrect);
-
-            } else {
+            }
+            else
+            {
                 ans_B.setBackgroundColor(Color.RED);
                 userWrong++;
                 wrong.setText("" + userWrong);
                 findAnswer();
             }
-            pauseTimer();
         });
 
-        ans_C.setOnClickListener(View -> {
+        ans_C.setOnClickListener(v -> {
+            pauseTimer();
             userAnswer = "c";
-
-            if (quizCorrectAnswer.equals(userAnswer)) {
+            if(quizCorrectAnswer.equals(userAnswer))
+            {
                 ans_C.setBackgroundColor(Color.GREEN);
                 userCorrect++;
                 correct.setText("" + userCorrect);
-
-            } else {
+            }
+            else
+            {
                 ans_C.setBackgroundColor(Color.RED);
                 userWrong++;
                 wrong.setText("" + userWrong);
                 findAnswer();
             }
-            pauseTimer();
         });
 
-        ans_D.setOnClickListener(View -> {
+        ans_D.setOnClickListener(v -> {
+            pauseTimer();
             userAnswer = "d";
-
-            if (quizCorrectAnswer.equals(userAnswer)) {
+            if(quizCorrectAnswer.equals(userAnswer))
+            {
                 ans_D.setBackgroundColor(Color.GREEN);
                 userCorrect++;
                 correct.setText("" + userCorrect);
-
-            } else {
+            }
+            else
+            {
                 ans_D.setBackgroundColor(Color.RED);
                 userWrong++;
                 wrong.setText("" + userWrong);
                 findAnswer();
             }
-            pauseTimer();
-
         });
     }
-
-    public void game() {
-
-        startTimer();
-
+    public void game()
+    {
+    startTimer();
         ans_A.setBackgroundColor(Color.WHITE);
         ans_B.setBackgroundColor(Color.WHITE);
         ans_C.setBackgroundColor(Color.WHITE);
         ans_D.setBackgroundColor(Color.WHITE);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            // This method is called once with the initial value and again
+            // whenever data at this location is updated.
 
-                questionCount = (int) dataSnapshot.getChildrenCount();
+            questionCount = (int) dataSnapshot.getChildrenCount();
 
-                quizQuestion = dataSnapshot.child(String.valueOf(questionNumber)).child("Q").getValue().toString();
-                quizAnswerA = dataSnapshot.child(String.valueOf(questionNumber)).child("a").getValue().toString();
-                quizAnswerB = dataSnapshot.child(String.valueOf(questionNumber)).child("b").getValue().toString();
-                quizAnswerC = dataSnapshot.child(String.valueOf(questionNumber)).child("c").getValue().toString();
-                quizAnswerD = dataSnapshot.child(String.valueOf(questionNumber)).child("d").getValue().toString();
-                quizCorrectAnswer = dataSnapshot.child(String.valueOf(questionNumber)).child("Answer").getValue().toString();
+            quizQuestion = dataSnapshot.child(String.valueOf(questionNumber)).child("Q").getValue().toString();
+            quizAnswerA = dataSnapshot.child(String.valueOf(questionNumber)).child("a").getValue().toString();
+            quizAnswerB = dataSnapshot.child(String.valueOf(questionNumber)).child("b").getValue().toString();
+            quizAnswerC = dataSnapshot.child(String.valueOf(questionNumber)).child("c").getValue().toString();
+            quizAnswerD = dataSnapshot.child(String.valueOf(questionNumber)).child("d").getValue().toString();
+            quizCorrectAnswer = dataSnapshot.child(String.valueOf(questionNumber)).child("Answer").getValue().toString();
 
-                question.setText(quizQuestion);
-                ans_A.setText(quizAnswerA);
-                ans_B.setText(quizAnswerB);
-                ans_C.setText(quizAnswerC);
-                ans_D.setText(quizAnswerD);
+            question.setText(quizQuestion);
+            ans_A.setText(quizAnswerA);
+            ans_B.setText(quizAnswerB);
+            ans_C.setText(quizAnswerC);
+            ans_D.setText(quizAnswerD);
 
-                if (questionNumber < questionCount) {
-                    questionNumber++;
-                } else {
-                    Toast.makeText(startGameActivity.this, "You Answered all questions"
-                            , Toast.LENGTH_SHORT).show();
-                }
+            if(questionNumber < questionCount)
+            {
+                questionNumber++;
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Toast.makeText(startGameActivity.this, "There is an error"
-                        , Toast.LENGTH_SHORT).show();
+            else
+            {
+                Toast.makeText(startGameActivity.this, "You answered all questions", Toast.LENGTH_LONG).show();
             }
-        });
-    }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError error) {
+            // Failed to read value
+            Toast.makeText(startGameActivity.this, "Sorry, there is a problem", Toast.LENGTH_LONG).show();
+
+        }
+    });
+}
 
     public void findAnswer() {
         switch (quizCorrectAnswer) {
@@ -220,58 +221,53 @@ public class startGameActivity extends AppCompatActivity {
         }
     }
 
-    public void startTimer() {
-
+    public void startTimer()
+    {
         countDownTimer = new CountDownTimer(leftTime, 1000) {
             @Override
-            public void onTick(long l) {
-
-                leftTime = l;
+            public void onTick(long millisUntilFinished) {
+                leftTime = millisUntilFinished;
                 updateCountDownText();
+
             }
 
-            @SuppressLint("SetTextI18n")
             @Override
             public void onFinish() {
                 timerContinue = false;
                 pauseTimer();
-                question.setText("Sorry Time's Up!");
+                question.setText("Sorry, time is up");
             }
         }.start();
+
         timerContinue = true;
     }
-
-    public void resetTimer() {
+    public void resetTimer()
+    {
         leftTime = TOTAL_TIME;
         updateCountDownText();
     }
-
-    @SuppressLint("SetTextI18n")
-    private void updateCountDownText() {
-        int second = (int) ((leftTime / 1000) % 60);
+    public void updateCountDownText()
+    {
+        int second = (int)(leftTime / 1000) % 60;
         time.setText("" + second);
     }
 
-    public void pauseTimer() {
+    public void pauseTimer()
+    {
         countDownTimer.cancel();
         timerContinue = false;
     }
 
     public void sendScore()
     {
-        String userUid = user.getUid();
-        reference.child("scores").child(userUid).child("Correct")
-                .setValue(userCorrect)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(startGameActivity.this, "Score send Successfully", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
-
-        reference.child("scores").child(userUid).child("Wrong")
-                .setValue(userWrong);
+        String userUID = user.getUid();
+        reference.child("scores").child(userUID).child("correct").setValue(userCorrect)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(startGameActivity.this, "scores sent successfully", Toast.LENGTH_LONG).show();
+                    }
+                });
+        reference.child("scores").child(userUID).child("wrong").setValue(userWrong);
     }
-
 }
