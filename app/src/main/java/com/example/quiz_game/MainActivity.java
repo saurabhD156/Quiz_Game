@@ -23,18 +23,19 @@ public class MainActivity extends AppCompatActivity {
         Button start = findViewById(R.id.btnStart);
         Button signOut = findViewById(R.id.signOut);
 
-        start.setOnClickListener(View->{
+        start.setOnClickListener(View -> {
 
             Intent i = new Intent(MainActivity.this, startGameActivity.class);
             startActivity(i);
 
         });
 
-        signOut.setOnClickListener(View->{
+        signOut.setOnClickListener(View -> {
             auth.signOut();
             Intent i = new Intent(MainActivity.this, SignInActivity.class);
             startActivity(i);
 
         });
     }
+
 }
